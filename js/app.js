@@ -17,7 +17,7 @@ var Map = function() {
 	this.mapOptions = {
 		center: {lat: 44.0511546, lng: -123.0854287},
 		zoom: 15,
-		disableDefaultUI: true
+
 	};
 };
 
@@ -47,7 +47,7 @@ function createMapMarkerAndInfoWindow(results) {
 	});
 	marker.setMap(googleMap);
 
-	var wikiContent;
+	var wikiContent, contentDiv;
 
 	var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + marker.name + '&format=json&callback=wikiCallback';
 
@@ -59,18 +59,22 @@ function createMapMarkerAndInfoWindow(results) {
 		url: wikiUrl,
 		dataType: "jsonp",
 		success: function(response) {
-			//get the wikiContent here to put in the infoWindow content
-			//build a div?
-			console.log(response);
+			wikiContent = response[3][0];
+			contentDiv = '<div id="infoWindowContent">' +
+				'<div id="contentDiv">' +
+				'<h5>' + marker.name + '</h5>' +
+				'<p><a href="' + wikiContent + '" target="_blank">' + wikiContent + '</a></p>' +
+				'</div>' +
+				'</div>';
+
+			var infoWindow = new google.maps.InfoWindow({
+				content: contentDiv
+			});
+
+			google.maps.event.addListener(marker, 'click', function() {
+				infoWindow.open(googleMap, marker);
+			});
 		}
-	});
-
-	var infoWindow = new google.maps.InfoWindow({
-		content: marker.title.toString()
-	});
-
-	google.maps.event.addListener(marker, 'click', function() {
-		infoWindow.open(googleMap, marker);
 	});
 }
 

@@ -7,7 +7,15 @@
 	    <title>Neighborhood Map</title>
 	</head>
 	<body>
-		<div id="map">
+		<div id="wrapper">
+			<div id="map">
+			</div>
+			<div id="locList">
+				<h4>Points of interest:</h4>
+				<div data-bind="with: currentLoc">
+					<h6 data-bind="text: placeName"></h6>
+				</div>
+			</div>
 		</div>
 		<script src="js/libs/jquery.min.js"></script>
 		<script src="js/libs/knockout-3.2.0.js"></script>

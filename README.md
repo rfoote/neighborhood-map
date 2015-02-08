@@ -21,4 +21,7 @@ http://stackoverflow.com/questions/21478563/google-maps-doesnt-appear-when-i-set
 5. As an example of a search box using Google Places:
 https://developers.google.com/maps/documentation/javascript/examples/places-searchbox
 
+6. Example of floating a div over Google Maps:
+http://stackoverflow.com/questions/6037712/how-to-float-a-div-over-google-maps
+
 

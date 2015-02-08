@@ -1,14 +1,20 @@
 var googleMap;
+var markerList = ko.observableArray([]);
+var infoWindowList = ko.observableArray([]);
+var locationList = ko.observableArray([]);
 
 var initialLocations = [
 	{
 		name: 'University of Oregon'
 	},
 	{
-		name: 'Alton Baker Park, 100 Day Island Road, Eugene, OR 97401, United States'
+		name: 'Alton Baker Park'
 	},
 	{
-		name: 'Skinner Butte Park, Cheshire Avenue, Eugene, OR 97401, United States'
+		name: 'Skinner Butte Park'
+	},
+	{
+		name: 'Oregon Electric Station'
 	}
 ];
 
@@ -16,13 +22,11 @@ var Map = function() {
 	this.placeName = "Eugene, Oregon";
 	this.mapOptions = {
 		center: {lat: 44.0511546, lng: -123.0854287},
-		zoom: 15,
-
+		zoom: 15
 	};
 };
 
 var Location = function(data) {
-	var self = this;
 	this.placeName = ko.observable(data);
 	this.placeInfo = ko.computed(function() {
 		var service = new google.maps.places.PlacesService(googleMap);
@@ -47,6 +51,8 @@ function createMapMarkerAndInfoWindow(results) {
 	});
 	marker.setMap(googleMap);
 
+	markerList.push(marker);
+
 	var wikiContent, contentDiv;
 
 	var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + marker.name + '&format=json&callback=wikiCallback';
@@ -61,7 +67,7 @@ function createMapMarkerAndInfoWindow(results) {
 		success: function(response) {
 			wikiContent = response[3][0];
 			contentDiv = '<div id="infoWindowContent">' +
-				'<div id="contentDiv">' +
+				'<div id="' + marker.name + '">' +
 				'<h5>' + marker.name + '</h5>' +
 				'<p><a href="' + wikiContent + '" target="_blank">' + wikiContent + '</a></p>' +
 				'</div>' +
@@ -71,7 +77,13 @@ function createMapMarkerAndInfoWindow(results) {
 				content: contentDiv
 			});
 
+			infoWindowList.push(infoWindow);
+
 			google.maps.event.addListener(marker, 'click', function() {
+				var infoArrLength = infoWindowList().length;
+				for (var i = 0; i < infoArrLength; i++) {
+					infoWindowList()[i].close();
+				}
 				infoWindow.open(googleMap, marker);
 			});
 		}
@@ -81,17 +93,54 @@ function createMapMarkerAndInfoWindow(results) {
 var ViewModel = function() {
 	var self = this;
 	var map = new Map();
-	this.locationList = ko.observableArray([]);
 
 	this.initialize = function() {
 		var gMap = new google.maps.Map(document.getElementById('map'), map.mapOptions);
 		googleMap = gMap;
-		initialLocations.forEach(function(location) {
-			self.locationList.push( new Location(location.name));
-		});
-	}
+	};
 	this.initialize();
 
+	initialLocations.forEach(function(location) {
+		locationList.push( new Location(location.name));
+	});
+
+	var listHtml = '<ul data-bind="foreach: locationList"><li class="locClass" data-bind="text: placeName, click: $parent.changeLoc"></li></ul>';
+	$("#locList").append(listHtml);
+
+	this.currentLoc = ko.observable(locationList()[0]);
+
+	this.changeLoc = function(clickedLoc, event) {
+		self.currentLoc(clickedLoc);
+		var index = 0;
+		var infoIndex = 0;
+		var nameToMatch = clickedLoc.placeName();
+		var arrlength = markerList().length;
+		for (var i = 0; i < arrlength; i++) {
+			if (nameToMatch === markerList()[i].name) {
+				index = i;
+				break;
+			}
+		}
+		var currentMarker = markerList()[index];
+		var infoArrLength = infoWindowList().length;
+		for (var i = 0; i < infoArrLength; i++) {
+			infoWindowList()[i].close();
+		}
+		for (var i = 0; i < infoArrLength; i++) {
+			var divTxt = infoWindowList()[i].content;
+			divTxt = divTxt.slice(37);
+			var stopIndex = divTxt.indexOf('"');
+			divTxt = divTxt.slice(0, stopIndex);
+			if (nameToMatch === divTxt) {
+				infoIndex = i;
+				break;
+			}
+		}
+		var currentInfoWindow = infoWindowList()[infoIndex];
+		currentInfoWindow.open(googleMap, currentMarker);
+		$(".locClass").css('font-weight', 'normal');
+		$(event.target).css('font-weight', 'bold');
+	};
 
 };
 

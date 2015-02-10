@@ -24,4 +24,7 @@ https://developers.google.com/maps/documentation/javascript/examples/places-sear
 6. Example of floating a div over Google Maps:
 http://stackoverflow.com/questions/6037712/how-to-float-a-div-over-google-maps
 
+7. How to use different colors for map markers:
+http://stackoverflow.com/questions/7095574/google-maps-api-3-custom-marker-color-for-default-dot-marker
+
 

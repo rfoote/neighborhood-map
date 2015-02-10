@@ -47,7 +47,8 @@ function createMapMarkerAndInfoWindow(results) {
 	var marker = new google.maps.Marker({
 		name: results[0].name,
 		position: results[0].geometry.location,
-		title: results[0].formatted_address
+		title: results[0].formatted_address,
+		icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
 	});
 	marker.setMap(googleMap);
 
@@ -84,7 +85,12 @@ function createMapMarkerAndInfoWindow(results) {
 				for (var i = 0; i < infoArrLength; i++) {
 					infoWindowList()[i].close();
 				}
+				var markerArrLength = markerList().length;
+				for (var i = 0; i < markerArrLength; i++) {
+					markerList()[i].setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png')
+				}
 				infoWindow.open(googleMap, marker);
+				marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
 			});
 		}
 	});
@@ -122,6 +128,11 @@ var ViewModel = function() {
 			}
 		}
 		var currentMarker = markerList()[index];
+		//Change all other markers back to red.
+		for (var i = 0; i < arrlength; i++) {
+			markerList()[i].setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png')
+		}
+		currentMarker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
 		var infoArrLength = infoWindowList().length;
 		for (var i = 0; i < infoArrLength; i++) {
 			infoWindowList()[i].close();

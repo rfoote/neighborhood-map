@@ -153,6 +153,16 @@ var ViewModel = function() {
 		$(event.target).css('font-weight', 'bold');
 	};
 
+	this.searchSuggest = function() {
+		var txt = $('#searchBox').text;
+		console.log(txt);
+	}
 };
+
+function getTxt() {
+	var txt = document.getElementById("searchBox");
+	var s = txt.value;
+	console.log(s);
+}
 
 ko.applyBindings(new ViewModel());

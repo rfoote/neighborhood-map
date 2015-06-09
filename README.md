@@ -30,5 +30,9 @@ http://stackoverflow.com/questions/7095574/google-maps-api-3-custom-marker-color
 8. Get text from text box as user types example:
 http://jsfiddle.net/VDd6C/8/
 
+9. Get li element by index in order to change css:
+http://stackoverflow.com/questions/9887534/get-an-element-by-index-in-jquery
+
+
 
 

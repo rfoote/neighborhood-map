@@ -81,6 +81,7 @@ function createMapMarkerAndInfoWindow(results) {
 			infoWindowList.push(infoWindow);
 
 			google.maps.event.addListener(marker, 'click', function() {
+				var index = 0;
 				var infoArrLength = infoWindowList().length;
 				for (var i = 0; i < infoArrLength; i++) {
 					infoWindowList()[i].close();
@@ -91,6 +92,18 @@ function createMapMarkerAndInfoWindow(results) {
 				}
 				infoWindow.open(googleMap, marker);
 				marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+				//Unbold stuff in Location List
+				$(".locClass").css('font-weight', 'normal');
+				//And bold the right item in Location List
+				var nameToMatch = marker.name;
+				var arrlength = locationList().length;
+				for (var i = 0; i < arrlength; i++) {
+					if (nameToMatch === locationList()[i].placeName()) {
+						index = i;
+						break;
+					}
+				}
+				$("#locList ul li").eq(index).css('font-weight', 'bold');
 			});
 		}
 	});
@@ -161,8 +174,15 @@ var ViewModel = function() {
 
 function getTxt() {
 	var txt = document.getElementById("searchBox");
-	var s = txt.value;
-	console.log(s);
+	var nameToMatch = txt.value.toLowerCase();
+	var numCharsToMatch = nameToMatch.length;
+	//Compare content to placeNames (lowercased)
+	var arrlength = locationList().length;
+	for (var i = 0; i < arrlength; i++) {
+		if (nameToMatch === locationList()[i].placeName().toLowerCase().slice(0, numCharsToMatch)) {
+
+		}
+	}	
 }
 
 ko.applyBindings(new ViewModel());

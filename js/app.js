@@ -23,7 +23,7 @@ var Map = function() {
 	this.placeName = "Eugene, Oregon";
 	this.mapOptions = {
 		center: {lat: 44.0511546, lng: -123.0854287},
-		zoom: 15
+		zoom: 14
 	};
 };
 
@@ -64,7 +64,7 @@ function createMapMarkerAndInfoWindow(results) {
 	var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + marker.name + '&format=json&callback=wikiCallback';
 
 	var wikiRequestTimeout = setTimeout(function() {
-		wikiContent = "Failed to get Wikipedia information";
+		wikiContent = "Error: Failed to get Wikipedia information";
 	}, 8000);
 
 	$.ajax({
@@ -120,7 +120,14 @@ var ViewModel = function() {
 
 	this.initialize = function() {
 		var gMap = new google.maps.Map(document.getElementById('map'), map.mapOptions);
-		googleMap = gMap;
+		if (typeof gMap != 'undefined') {
+			googleMap = gMap;
+		}
+		else {
+			var errorHtml = '<p>Error: The map was unable to load.</p>';
+			$("#map").append(errorHtml);
+		}
+
 	};
 	this.initialize();
 
@@ -225,11 +232,7 @@ var ViewModel = function() {
 				}
 			})
 		}
-
-
 	};
-	
 };
-
 
 ko.applyBindings(new ViewModel());

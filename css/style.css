@@ -52,4 +52,34 @@ li {
 	width: 200px;
 }
 
+@media screen and (max-width: 600px) {
+	body {
+		font-size: 70%;
+	}
+
+	#locList {
+		position: absolute;
+		top: 140px;
+		left: 22px;
+		z-index: 99;
+		background-color: #fff;
+		padding-left: 10px;
+	}
+
+	#search {
+		position: absolute;
+		top: 45px;
+		left: 22px;
+		z-index: 99;
+		background-color: #fff;
+		padding-left: 10px;
+		padding-right: 10px;
+		padding-bottom: 10px;
+	}
+
+	#searchBox {
+		width: 40px;
+	}
+}
+
 

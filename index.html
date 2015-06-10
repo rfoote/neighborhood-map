@@ -13,8 +13,11 @@
 			<div id="search">
 				<h4>Search points of interest:</h4>
 				<div>
-					<input id="searchBox" type="text" onKeyUp="getTxt()"></input>
+					<input id="searchTxt" data-bind="textInput: userLocation.placeName, event: {keyup: changeUserLocation}" />
 				</div>
+				<!--<div>
+					<input id="searchBox" type="text" onKeyUp="getTxt()"></input>
+				</div>-->
 				<!--<div>
 					<select id="searchSelect" data-bind="options: locationList, optionsText: 'placeName'"></select>
 				</div>-->

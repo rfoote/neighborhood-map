@@ -2,6 +2,7 @@ var googleMap;
 var markerList = ko.observableArray([]);
 var infoWindowList = ko.observableArray([]);
 var locationList = ko.observableArray([]);
+var searchLocationList = ko.observableArray([]);
 
 var initialLocations = [
 	{
@@ -35,6 +36,10 @@ var Location = function(data) {
 		};
 		service.textSearch(request, callback);
 	}, this);
+};
+
+var UserLocation = function(data) {
+	this.placeName = ko.observable(data);
 };
 
 function callback(results, status) {
@@ -128,6 +133,12 @@ var ViewModel = function() {
 
 	this.currentLoc = ko.observable(locationList()[0]);
 
+	this.userLocation = new UserLocation("");
+
+	initialLocations.forEach(function(location) {
+		searchLocationList.push( new Location(location.name));
+	});
+
 	this.changeLoc = function(clickedLoc, event) {
 		self.currentLoc(clickedLoc);
 		var index = 0;
@@ -166,23 +177,59 @@ var ViewModel = function() {
 		$(event.target).css('font-weight', 'bold');
 	};
 
-	this.searchSuggest = function() {
-		var txt = $('#searchBox').text;
-		console.log(txt);
-	}
+	this.changeUserLocation = function() {
+		var arrlength = searchLocationList().length;
+		for (var j = 0; j < arrlength; j++) {
+			searchLocationList.pop();
+		}
+		var txt = $("#searchTxt").val();
+		self.userLocation.placeName = txt;
+		var nameToMatch = self.userLocation.placeName.toLowerCase();
+		var numCharsToMatch = nameToMatch.length;
+		arrlength = locationList().length;
+		for (var i = 0; i < arrlength; i++) {
+			if (nameToMatch === locationList()[i].placeName().toLowerCase().slice(0, numCharsToMatch)) {
+				searchLocationList.push( new Location(locationList()[i].placeName()));
+			}
+		}
+		
+		//Filter map markers and list items based on what's in searchLocationList, show or hide
+
+		//Hide them all to start
+		var markArrlength = markerList().length;
+		for (var k = 0; k < markArrlength; k++) {
+			markerList()[k].setVisible(false);
+		}
+
+		$(".locClass").each(function() {
+			this.style.fontWeight = "normal";
+			this.style.visibility = "hidden";
+		});
+
+		//Also close info windows
+		for (var p = 0; p < infoWindowList().length; p++)
+		{
+			infoWindowList()[p].close();
+		}
+
+
+		for (var m = 0; m < searchLocationList().length; m++) {
+			for (var n = 0; n < markArrlength; n++) {
+				if (markerList()[n].name === searchLocationList()[m].placeName()) {
+					markerList()[n].setVisible(true);
+				}
+			}
+			$(".locClass").each(function() {
+				if ($(this).text() === searchLocationList()[m].placeName()) {
+					this.style.visibility = "visible";
+				}
+			})
+		}
+
+
+	};
+	
 };
 
-function getTxt() {
-	var txt = document.getElementById("searchBox");
-	var nameToMatch = txt.value.toLowerCase();
-	var numCharsToMatch = nameToMatch.length;
-	//Compare content to placeNames (lowercased)
-	var arrlength = locationList().length;
-	for (var i = 0; i < arrlength; i++) {
-		if (nameToMatch === locationList()[i].placeName().toLowerCase().slice(0, numCharsToMatch)) {
-
-		}
-	}	
-}
 
 ko.applyBindings(new ViewModel());

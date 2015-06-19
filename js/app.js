@@ -1,10 +1,12 @@
+"use strict";
+
 //Variables that are global to this js file include the Google map,
 //and the lists of markers, info windows, locations, and search locations.
 var googleMap;
-var markerList = ko.observableArray([]);
-var infoWindowList = ko.observableArray([]);
-var locationList = ko.observableArray([]);
-var searchLocationList = ko.observableArray([]);
+var markerList = [];
+var infoWindowList = [];
+var locationList = [];
+var searchLocationList = [];
 
 //Points of interest that I chose for the map.
 var initialLocations = [
@@ -22,7 +24,7 @@ var initialLocations = [
 	}
 ];
 
-//The model includes a Map, Locations (my points of interest specified in the initialLocations array), 
+//The model includes a Map, Locations (my points of interest specified in the initialLocations array),
 //and a UserLocation (what the user enters into the search box).
 
 //The map inclues the place that I chose as the city of interest
@@ -77,7 +79,7 @@ function createMapMarkerAndInfoWindow(results) {
 		title: results[0].formatted_address,
 		icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
 	});
-	
+
 	//Place the marker on the map and add the marker to the marker list.
 	marker.setMap(googleMap);
 	markerList.push(marker);
@@ -120,32 +122,32 @@ function createMapMarkerAndInfoWindow(results) {
 			//in bold.
 			google.maps.event.addListener(marker, 'click', function() {
 				var index = 0;
-				
+
 				//Iterate through all of the info windows, closing them.
-				var infoArrLength = infoWindowList().length;
+				var infoArrLength = infoWindowList.length;
 				for (var i = 0; i < infoArrLength; i++) {
-					infoWindowList()[i].close();
+					infoWindowList[i].close();
 				}
-				
+
 				//Reset all markers to use the red marker icon.
-				var markerArrLength = markerList().length;
-				for (var i = 0; i < markerArrLength; i++) {
-					markerList()[i].setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png')
+				var markerArrLength = markerList.length;
+				for (var a = 0; a < markerArrLength; a++) {
+					markerList[a].setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
 				}
-				
+
 				//Open the info window of the clicked marker, and change the marker color to green.
 				infoWindow.open(googleMap, marker);
 				marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
-				
+
 				//Unbold all items in Location List
 				$(".locClass").css('font-weight', 'normal');
-				
+
 				//And bold the right item in Location List by matching names.
 				var nameToMatch = marker.name;
-				var arrlength = locationList().length;
-				for (var i = 0; i < arrlength; i++) {
-					if (nameToMatch === locationList()[i].placeName()) {
-						index = i;
+				var arrlength = locationList.length;
+				for (var b = 0; b < arrlength; b++) {
+					if (nameToMatch === locationList[b].placeName()) {
+						index = b;
 						break;
 					}
 				}
@@ -159,13 +161,13 @@ function createMapMarkerAndInfoWindow(results) {
 //including the list view of locations and the search bar.
 var ViewModel = function() {
 	var self = this;
-	
+
 	//Instantiate a Map object for the Googla Map.
 	var map = new Map();
 
 	//This function sets the map based on the map object's options.
 	//If the call to Google Maps results in an undefined map, an error message is displayed.
-	this.initialize = function() {
+	self.initialize = function() {
 		var gMap = new google.maps.Map(document.getElementById('map'), map.mapOptions);
 		if (typeof gMap != 'undefined') {
 			googleMap = gMap;
@@ -176,7 +178,7 @@ var ViewModel = function() {
 		}
 
 	};
-	this.initialize();
+	self.initialize();
 
 	//Add the initial locations specified in the initialLocations array to the location list.
 	initialLocations.forEach(function(location) {
@@ -188,10 +190,10 @@ var ViewModel = function() {
 	$("#locList").append(listHtml);
 
 	//Set the current location to the first one in the location list.
-	this.currentLoc = ko.observable(locationList()[0]);
+	self.currentLoc = ko.observable(locationList[0]);
 
 	//Initialize a UserLocation object that will hold whatever the user enters into the search box.
-	this.userLocation = new UserLocation("");
+	self.userLocation = new UserLocation("");
 
 	//Add all of the intitial locations from the initialLocations array to the searchLocationList.
 	initialLocations.forEach(function(location) {
@@ -199,7 +201,7 @@ var ViewModel = function() {
 	});
 
 	//This function updates map markers based on items clicked by the user in the list view of locations.
-	this.changeLoc = function(clickedLoc, event) {
+	self.changeLoc = function(clickedLoc, event) {
 		//Change the current location to the one that was clicked.
 		self.currentLoc(clickedLoc);
 		var index = 0;
@@ -207,33 +209,33 @@ var ViewModel = function() {
 
 		//Find the marker that corresponds to the clicked item in the list view.
 		var nameToMatch = self.currentLoc().placeName();
-		var arrlength = markerList().length;
+		var arrlength = markerList.length;
 		for (var i = 0; i < arrlength; i++) {
-			if (nameToMatch === markerList()[i].name) {
+			if (nameToMatch === markerList[i].name) {
 				index = i;
 			}
 		}
 
 		//Change all markers back to red.
 		for (var j = 0; j < arrlength; j++) {
-			markerList()[j].setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png')
+			markerList[j].setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
 		}
-		
+
 		//Make the current marker the one that corresponds to the clicked item.
-		var currentMarker = markerList()[index];
-				
+		var currentMarker = markerList[index];
+
 		//And change the current marker to green to show it was the one clicked.
 		currentMarker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
-		
+
 		//Close all info windows.
-		var infoArrLength = infoWindowList().length;
+		var infoArrLength = infoWindowList.length;
 		for (var k = 0; k < infoArrLength; k++) {
-			infoWindowList()[k].close();
+			infoWindowList[k].close();
 		}
-		
+
 		//Find the correct info window in the list by matching location names.
 		for (var m = 0; m < infoArrLength; m++) {
-			var divTxt = infoWindowList()[m].content;
+			var divTxt = infoWindowList[m].content;
 			divTxt = divTxt.slice(37);
 			var stopIndex = divTxt.indexOf('"');
 			divTxt = divTxt.slice(0, stopIndex);
@@ -241,11 +243,11 @@ var ViewModel = function() {
 				infoIndex = m;
 			}
 		}
-		
+
 		//Make the current info window the one that corresponds to the clicked marker and open it.
-		var currentInfoWindow = infoWindowList()[infoIndex];	
+		var currentInfoWindow = infoWindowList[infoIndex];
 		currentInfoWindow.open(googleMap, currentMarker);
-		
+
 		//Unbold all list items except for the cliked one.
 		$(".locClass").css('font-weight', 'normal');
 		$(event.target).css('font-weight', 'bold');
@@ -253,34 +255,34 @@ var ViewModel = function() {
 
 	//This function filters map markers and list view items based on what the user enters into
 	//the search box (by changing the userLocation).
-	this.changeUserLocation = function() {
+	self.changeUserLocation = function() {
 		//Remove all locations from the searchLocationList to start.
-		var arrlength = searchLocationList().length;
+		var arrlength = searchLocationList.length;
 		for (var j = 0; j < arrlength; j++) {
 			searchLocationList.pop();
 		}
-		
+
 		//Get the text that the user has entered into the search box, convert it to lowercase,
 		//and count how many characters the user has entered at this point.
 		var txt = $("#searchTxt").val();
 		self.userLocation.placeName = txt;
 		var nameToMatch = self.userLocation.placeName.toLowerCase();
 		var numCharsToMatch = nameToMatch.length;
-		
+
 		//Using this information, add any locations to the searchLocationList that match what
 		//the user has entered at this point.
-		arrlength = locationList().length;
+		arrlength = locationList.length;
 		for (var i = 0; i < arrlength; i++) {
-			if (nameToMatch === locationList()[i].placeName().toLowerCase().slice(0, numCharsToMatch)) {
-				searchLocationList.push( new Location(locationList()[i].placeName()));
+			if (nameToMatch === locationList[i].placeName().toLowerCase().slice(0, numCharsToMatch)) {
+				searchLocationList.push( new Location(locationList[i].placeName()));
 			}
 		}
-		
+
 		//Filter map markers and list items based on what's in searchLocationList, showing or hiding them.
 		//Hide all markers to start
-		var markArrlength = markerList().length;
+		var markArrlength = markerList.length;
 		for (var k = 0; k < markArrlength; k++) {
-			markerList()[k].setVisible(false);
+			markerList[k].setVisible(false);
 		}
 
 		//Hide all list items, and make their font normal weight.
@@ -290,24 +292,24 @@ var ViewModel = function() {
 		});
 
 		//Also close all info windows
-		for (var p = 0; p < infoWindowList().length; p++)
+		for (var p = 0; p < infoWindowList.length; p++)
 		{
-			infoWindowList()[p].close();
+			infoWindowList[p].close();
 		}
 
 		//Iterate through the locations in the searchLocationList, and make
 		//any matches in the markers and in the list items visible.
-		for (var m = 0; m < searchLocationList().length; m++) {
+		for (var m = 0; m < searchLocationList.length; m++) {
 			for (var n = 0; n < markArrlength; n++) {
-				if (markerList()[n].name === searchLocationList()[m].placeName()) {
-					markerList()[n].setVisible(true);
+				if (markerList[n].name === searchLocationList[m].placeName()) {
+					markerList[n].setVisible(true);
 				}
 			}
 			$(".locClass").each(function() {
-				if ($(this).text() === searchLocationList()[m].placeName()) {
+				if ($(this).text() === searchLocationList[m].placeName()) {
 					this.style.visibility = "visible";
 				}
-			})
+			});
 		}
 	};
 };

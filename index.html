@@ -7,29 +7,29 @@
 	    <title>Neighborhood Map</title>
 	</head>
 	<body>
-		<div id="wrapper">
-			
+		<div class="wrapper">
+
 			<!--Map div-->
-			<div id="map">
+			<div id="map" class="map">
 			</div>
-			
+
 			<!--Search box div-->
-			<div id="search">
+			<div id="search" class="search">
 				<h4>Search points of interest:</h4>
 				<div>
 					<!--Call the changeUserLocation method on the keyup event-->
 					<input id="searchTxt" data-bind="textInput: userLocation.placeName, event: {keyup: changeUserLocation}" />
 				</div>
 			</div>
-			
+
 			<!--List view div-->
-			<div id="locList">
+			<div id="locList" class="locList">
 				<h4>Points of interest:</h4>
 				<div data-bind="with: currentLoc">
 				</div>
 			</div>
 		</div>
-		
+
 		<script src="js/libs/jquery.min.js"></script>
 		<script src="js/libs/knockout-3.2.0.js"></script>
 		<script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyApOkI8T4n6Sl5Tm0YW1BnACY3MR8ehd3g"></script>

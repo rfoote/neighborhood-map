@@ -8,10 +8,12 @@ body {
 body,
 html,
 .map,
-.wrapper {
+.wrapper,
+.col-md-12 {
 	width: 100%;
 	height: 100%;
 	font-size: 100%;
+
 }
 
 a {

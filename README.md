@@ -1,6 +1,6 @@
 To run the application:
 
-To run the application, download all repository files (clone the repository). Then open index.html in your browser.
+To run the application, download all repository files (clone the repository). Then open index.html in your browser. The repository URL: https://github.com/rfoote/neighborhood-map.git
 
 
 
@@ -26,3 +26,9 @@ http://stackoverflow.com/questions/7095574/google-maps-api-3-custom-marker-color
 
 7. Get li element by index in order to change css:
 http://stackoverflow.com/questions/9887534/get-an-element-by-index-in-jquery
+
+8. Use Bootstrap with Google Maps:
+http://stackoverflow.com/questions/18478919/bootstrap-3-0-and-google-maps-javascript-api-v3-styling
+
+9. Center the map on a clicked marker/marker selected from list
+https://stackoverflow.com/questions/6150409/google-map-v3-set-center-to-specific-marker

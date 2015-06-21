@@ -152,6 +152,10 @@ function createMapMarkerAndInfoWindow(results) {
 					}
 				}
 				$("#locList ul li").eq(index).css('font-weight', 'bold');
+
+				//And center the map on the clicked marker.
+				var latLng = marker.getPosition();
+				googleMap.setCenter(latLng);
 			});
 		}
 	});
@@ -251,6 +255,10 @@ var ViewModel = function() {
 		//Unbold all list items except for the cliked one.
 		$(".locClass").css('font-weight', 'normal');
 		$(event.target).css('font-weight', 'bold');
+
+		//And center the map on the clicked marker.
+		var latLng = currentMarker.getPosition();
+		googleMap.setCenter(latLng);
 	};
 
 	//This function filters map markers and list view items based on what the user enters into

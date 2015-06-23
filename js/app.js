@@ -8,6 +8,10 @@ var infoWindowList = [];
 var locationList = [];
 var searchLocationList = [];
 
+//A global variable to hold place names retrieved from Google Places.
+//Used to prevent duplicate places from being added to the locationList array.
+var tempResult = "";
+
 //Points of interest that I chose for the map.
 var initialLocations = [
 	{
@@ -80,85 +84,101 @@ function createMapMarkerAndInfoWindow(results) {
 		icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
 	});
 
-	//Place the marker on the map and add the marker to the marker list.
-	marker.setMap(googleMap);
-	markerList.push(marker);
+	//As long as the place isn't a duplicate with the previous one, add its marker to the marker list.	
+	if (results[0].name !== tempResult) {
+		marker.setMap(googleMap);
+		markerList.push(marker);
 
-	//Search for the location/point of interest on Wikipedia, and request
-	//a link to that information to be displayed in the info window.
-	var wikiContent, contentDiv;
+		//Search for the location/point of interest on Wikipedia, and request
+		//a link to that information to be displayed in the info window.
+		var wikiContent, contentDiv;
 
-	var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + marker.name + '&format=json&callback=wikiCallback';
+		var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + marker.name + '&format=json&callback=wikiCallback';
 
-	//If the request fails, show an error message.
-	var wikiRequestTimeout = setTimeout(function() {
-		wikiContent = "Error: Failed to get Wikipedia information";
-	}, 8000);
+		//If the request fails, show an error message.
+		var wikiRequestTimeout = setTimeout(function() {
+			wikiContent = "Error: Failed to get Wikipedia information";
+		}, 8000);
 
-	//Make the request, and upon success, format the data into html for the info window.
-	$.ajax({
-		url: wikiUrl,
-		dataType: "jsonp",
-		success: function(response) {
-			wikiContent = response[3][0];
-			contentDiv = '<div id="infoWindowContent">' +
-				'<div id="' + marker.name + '">' +
-				'<h5>' + marker.name + '</h5>' +
-				'<p><a href="' + wikiContent + '" target="_blank">' + wikiContent + '</a></p>' +
-				'</div>' +
-				'</div>';
+		//Make the request, and upon success, format the data into html for the info window.
+		$.ajax({
+			url: wikiUrl,
+			dataType: "jsonp",
+			success: function(response) {
+				wikiContent = response[3][0];
+				contentDiv = '<div id="infoWindowContent" class="infoWindowContent">' +
+					'<div id="' + marker.name + '">' +
+					'<p>' + marker.name + '</p>' +
+					'<p><a href="' + wikiContent + '" target="_blank">' + wikiContent + '</a></p>' +
+					'</div>' +
+					'</div>';
 
-			//Create the info window and put the formatted content in it.
-			var infoWindow = new google.maps.InfoWindow({
-				content: contentDiv
-			});
+				//Create the info window and put the formatted content in it.
+				var infoWindow = new google.maps.InfoWindow({
+					content: contentDiv
+				});
 
-			//Add the info window to the list of info windows.
-			infoWindowList.push(infoWindow);
+				//Add the info window to the list of info windows.
+				infoWindowList.push(infoWindow);
 
-			//Add an event listener to the map marker so that when it's clicked,
-			//the appropriate info window opens, while any other open ones are closed.
-			//Also update the location list so that only the clicked location is shown
-			//in bold.
-			google.maps.event.addListener(marker, 'click', function() {
-				var index = 0;
+				//Add an event listener to the map marker so that when it's clicked,
+				//the appropriate info window opens, while any other open ones are closed.
+				//Also update the location list so that only the clicked location is shown
+				//in bold.
+				google.maps.event.addListener(marker, 'click', function() {
+					var index = 0;
 
-				//Iterate through all of the info windows, closing them.
-				var infoArrLength = infoWindowList.length;
-				for (var i = 0; i < infoArrLength; i++) {
-					infoWindowList[i].close();
-				}
-
-				//Reset all markers to use the red marker icon.
-				var markerArrLength = markerList.length;
-				for (var a = 0; a < markerArrLength; a++) {
-					markerList[a].setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
-				}
-
-				//Open the info window of the clicked marker, and change the marker color to green.
-				infoWindow.open(googleMap, marker);
-				marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
-
-				//Unbold all items in Location List
-				$(".locClass").css('font-weight', 'normal');
-
-				//And bold the right item in Location List by matching names.
-				var nameToMatch = marker.name;
-				var arrlength = locationList.length;
-				for (var b = 0; b < arrlength; b++) {
-					if (nameToMatch === locationList[b].placeName()) {
-						index = b;
-						break;
+					//Iterate through all of the info windows, closing them.
+					var infoArrLength = infoWindowList.length;
+					for (var i = 0; i < infoArrLength; i++) {
+						infoWindowList[i].close();
 					}
-				}
-				$("#locList ul li").eq(index).css('font-weight', 'bold');
 
-				//And center the map on the clicked marker.
-				var latLng = marker.getPosition();
-				googleMap.setCenter(latLng);
-			});
-		}
-	});
+					//Reset all markers to use the red marker icon.
+					var markerArrLength = markerList.length;
+					for (var a = 0; a < markerArrLength; a++) {
+						markerList[a].setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
+					}
+
+					//Open the info window of the clicked marker, and change the marker color to green.
+					infoWindow.open(googleMap, marker);
+					marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+
+					//Unbold all items in Location List
+					$(".locClass").css('font-weight', 'normal');
+
+					//And bold the right item in Location List by matching names.
+					var nameToMatch = marker.name;
+					var arrlength = locationList.length;
+					for (var b = 0; b < arrlength; b++) {
+						if (nameToMatch === locationList[b].placeName()) {
+							index = b;
+							break;
+						}
+					}
+					$("#locList ul li").eq(index).css('font-weight', 'bold');
+
+					//And center the map on the clicked marker.
+					var isMobileSz = window.matchMedia("only screen and (max-width: 760px)");
+					if(isMobileSz.matches) {
+						var latLng = marker.getPosition();
+						console.log(latLng);
+						googleMap.setCenter(latLng);
+					}
+					else {
+						var latLng = marker.getPosition();
+						googleMap.setCenter(latLng);
+					}
+
+					//And center the map on the clicked marker.
+					
+				});
+			}
+		});
+	}
+
+	//Update the tempResult to hold the current place name.
+	tempResult = results[0].name;	
 }
 
 //The ViewModel initializes the map, and manages elements that the user interacts with
@@ -173,6 +193,12 @@ var ViewModel = function() {
 	//If the call to Google Maps results in an undefined map, an error message is displayed.
 	self.initialize = function() {
 		var gMap = new google.maps.Map(document.getElementById('map'), map.mapOptions);
+		$(document).ready(function() {
+			var isMobile = window.matchMedia("only screen and (max-width: 760px)");
+			if (isMobile.matches) {
+				gMap.setZoom(12);
+			}
+		});
 		if (typeof gMap != 'undefined') {
 			googleMap = gMap;
 		}
@@ -190,7 +216,7 @@ var ViewModel = function() {
 	});
 
 	//Add a list item to the list view of locations, one for each location.
-	var listHtml = '<ul data-bind="foreach: locationList"><li class="locClass" data-bind="text: placeName, click: $parent.changeLoc"></li></ul>';
+	var listHtml = '<ul class="sidebar-nav" data-bind="foreach: locationList"><li class="locClass sidebar-brand" data-bind="text: placeName, click: $parent.changeLoc"></li></ul>';
 	$("#locList").append(listHtml);
 
 	//Set the current location to the first one in the location list.
@@ -208,6 +234,7 @@ var ViewModel = function() {
 	self.changeLoc = function(clickedLoc, event) {
 		//Change the current location to the one that was clicked.
 		self.currentLoc(clickedLoc);
+
 		var index = 0;
 		var infoIndex = 0;
 
@@ -240,7 +267,7 @@ var ViewModel = function() {
 		//Find the correct info window in the list by matching location names.
 		for (var m = 0; m < infoArrLength; m++) {
 			var divTxt = infoWindowList[m].content;
-			divTxt = divTxt.slice(37);
+			divTxt = divTxt.slice(63);
 			var stopIndex = divTxt.indexOf('"');
 			divTxt = divTxt.slice(0, stopIndex);
 			if (nameToMatch === divTxt) {

@@ -32,3 +32,6 @@ http://stackoverflow.com/questions/18478919/bootstrap-3-0-and-google-maps-javasc
 
 9. Center the map on a clicked marker/marker selected from list
 https://stackoverflow.com/questions/6150409/google-map-v3-set-center-to-specific-marker
+
+10. Simple Sidebar plug-in:
+http://startbootstrap.com/template-overviews/simple-sidebar/

@@ -5,39 +5,61 @@
 		<meta charset="UTF-8">
 		<link rel="stylesheet" href="css/style.css">
 		<link rel="stylesheet" href="css/bootstrap.min.css">
+		<link rel="stylesheet" href="css/simple-sidebar.css">
 	    <title>Neighborhood Map</title>
 	</head>
 	<body>
-		<div class="wrapper">
+		<div class="wrapper" id="wrapper">
 			<div class="col-md-12">
 
-			<!--Map div-->
-			<div id="map" class="map">
+			<!--Sidebar - hidden for smaller devices-->
+			<div id="sidebar-wrapper" class="sidebar-wrapper">
+				<h5>Points of interest:</h5>
+				<!--List view div-->
+				<div id="locList">
+				</div>
+
+				<!--Search box div-->
+				<div id="search" class="search">
+					<p>Search points of interest:</p>
+					<div>
+						<!--Call the changeUserLocation method on the keyup event-->
+						<input id="searchTxt" data-bind="textInput: userLocation.placeName, event: {keyup: changeUserLocation}" />
+					</div>
+				</div>
+
 			</div>
 
-			<!--Search box div-->
-			<div id="search" class="search">
-				<h4>Search points of interest:</h4>
-				<div>
-					<!--Call the changeUserLocation method on the keyup event-->
-					<input id="searchTxt" data-bind="textInput: userLocation.placeName, event: {keyup: changeUserLocation}" />
+			<div id="page-content-wrapper" class="page-content-wrapper">
+				<div class="container-fluid">
+					<!--Map div-->
+					<div id="map" class="map">
+					</div>				
+
+					<!--Show sidebar button-->
+					<div class="btn">
+						<a href="#menu-toggle" id="menu-toggle">Toggle menu</a>
+					</div>
+
+
 				</div>
 			</div>
 
-			<!--List view div-->
-			<div id="locList" class="locList">
-				<h4>Points of interest:</h4>
-				<div data-bind="with: currentLoc">
-				</div>
-			</div>
-
-			</div>
 
 		</div>
 
 		<script src="js/libs/jquery.min.js"></script>
 		<script src="js/libs/knockout-3.2.0.js"></script>
+		<script src="js/libs/bootstrap.min.js"></script>
 		<script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyApOkI8T4n6Sl5Tm0YW1BnACY3MR8ehd3g"></script>
 		<script src="js/app.js"></script>
+		<!-- Menu Toggle Script -->
+	    <script>
+	    $("#menu-toggle").click(function(e) {
+	        e.preventDefault();
+	        $("#wrapper").toggleClass("toggled");
+	    });
+	    </script>
+
 	</body>
 </html>

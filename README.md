@@ -35,3 +35,6 @@ https://stackoverflow.com/questions/6150409/google-map-v3-set-center-to-specific
 
 10. Simple Sidebar plug-in:
 http://startbootstrap.com/template-overviews/simple-sidebar/
+
+11. Offline plug-in for when internet connection is lost:
+http://github.hubspot.com/offline/

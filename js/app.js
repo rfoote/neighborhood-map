@@ -84,7 +84,7 @@ function createMapMarkerAndInfoWindow(results) {
 		icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
 	});
 
-	//As long as the place isn't a duplicate with the previous one, add its marker to the marker list.	
+	//As long as the place isn't a duplicate with the previous one, add its marker to the marker list.
 	if (results[0].name !== tempResult) {
 		marker.setMap(googleMap);
 		markerList.push(marker);
@@ -127,6 +127,7 @@ function createMapMarkerAndInfoWindow(results) {
 				//in bold.
 				google.maps.event.addListener(marker, 'click', function() {
 					var index = 0;
+					var latLng;
 
 					//Iterate through all of the info windows, closing them.
 					var infoArrLength = infoWindowList.length;
@@ -161,24 +162,22 @@ function createMapMarkerAndInfoWindow(results) {
 					//And center the map on the clicked marker.
 					var isMobileSz = window.matchMedia("only screen and (max-width: 760px)");
 					if(isMobileSz.matches) {
-						var latLng = marker.getPosition();
+						latLng = marker.getPosition();
 						console.log(latLng);
 						googleMap.setCenter(latLng);
 					}
 					else {
-						var latLng = marker.getPosition();
+						latLng = marker.getPosition();
 						googleMap.setCenter(latLng);
 					}
 
-					//And center the map on the clicked marker.
-					
 				});
 			}
 		});
 	}
 
 	//Update the tempResult to hold the current place name.
-	tempResult = results[0].name;	
+	tempResult = results[0].name;
 }
 
 //The ViewModel initializes the map, and manages elements that the user interacts with
@@ -206,7 +205,6 @@ var ViewModel = function() {
 			var errorHtml = '<p>Error: The map was unable to load.</p>';
 			$("#map").append(errorHtml);
 		}
-
 	};
 	self.initialize();
 

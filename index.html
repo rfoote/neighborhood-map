@@ -6,53 +6,59 @@
 		<link rel="stylesheet" href="css/style.css">
 		<link rel="stylesheet" href="css/bootstrap.min.css">
 		<link rel="stylesheet" href="css/simple-sidebar.css">
+		<link rel="stylesheet" href="css/offline-theme-dark-indicator.css">
+		<link rel="stylesheet" href="css/offline-language-english-indicator.css">
 	    <title>Neighborhood Map</title>
 	</head>
 	<body>
 		<div class="wrapper" id="wrapper">
 			<div class="col-md-12">
 
-			<!--Sidebar - hidden for smaller devices-->
-			<div id="sidebar-wrapper" class="sidebar-wrapper">
-				<h5>Points of interest:</h5>
-				<!--List view div-->
-				<div id="locList">
+				<!--Sidebar (hidden for smaller devices)-->
+				<div id="sidebar-wrapper" class="sidebar-wrapper">
+					<h5>Points of interest:</h5>
+
+					<!--List view div-->
+					<div id="locList">
+					</div>
+
+					<!--Search box div-->
+					<div id="search" class="search">
+						<p>Search points of interest:</p>
+						<div>
+							<!--Call the changeUserLocation method on the keyup event-->
+							<input id="searchTxt" data-bind="textInput: userLocation.placeName, event: {keyup: changeUserLocation}" />
+						</div>
+					</div>
+
 				</div>
 
-				<!--Search box div-->
-				<div id="search" class="search">
-					<p>Search points of interest:</p>
-					<div>
-						<!--Call the changeUserLocation method on the keyup event-->
-						<input id="searchTxt" data-bind="textInput: userLocation.placeName, event: {keyup: changeUserLocation}" />
+				<!--Main page content-->
+				<div id="page-content-wrapper" class="page-content-wrapper">
+					<div class="container-fluid">
+
+						<!--Map div-->
+						<div id="map" class="map">
+						</div>
+
+						<!--Toggle menu button-->
+						<div class="btn">
+							<a href="#menu-toggle" id="menu-toggle">Toggle menu</a>
+						</div>
+
 					</div>
 				</div>
 
 			</div>
-
-			<div id="page-content-wrapper" class="page-content-wrapper">
-				<div class="container-fluid">
-					<!--Map div-->
-					<div id="map" class="map">
-					</div>				
-
-					<!--Show sidebar button-->
-					<div class="btn">
-						<a href="#menu-toggle" id="menu-toggle">Toggle menu</a>
-					</div>
-
-
-				</div>
-			</div>
-
-
 		</div>
 
 		<script src="js/libs/jquery.min.js"></script>
 		<script src="js/libs/knockout-3.2.0.js"></script>
 		<script src="js/libs/bootstrap.min.js"></script>
+		<script src="js/libs/offline.min.js"></script>
 		<script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyApOkI8T4n6Sl5Tm0YW1BnACY3MR8ehd3g"></script>
 		<script src="js/app.js"></script>
+
 		<!-- Menu Toggle Script -->
 	    <script>
 	    $("#menu-toggle").click(function(e) {
@@ -60,6 +66,5 @@
 	        $("#wrapper").toggleClass("toggled");
 	    });
 	    </script>
-
 	</body>
 </html>
